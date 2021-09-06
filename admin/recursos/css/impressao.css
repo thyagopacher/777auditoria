@@ -1,0 +1,42 @@
+/*
+@author Thyago Henrique Pacher - thyago.pacher@gmail.com
+*/
+/* 
+    Created on : 08/02/2017, 14:37:14
+    Author     : ThyagoHenrique
+*/
+
+* { margin: 0; padding: 0; }
+.titulo { font-size: 50px; color: #962929; }
+.texto01 { font-size: 28px; }
+.dados { text-align:center; font-size: 14px; }
+.rodape { text-align:center; font-size: 11px; }
+.adjust { color: #FFFFFF; }
+h3{ font-size: 14px; font-weight: normal; }
+.txt12{ line-height: 30px; }
+@page{
+    background: url('http://comexito.com.br/site3/admin/recursos/img/degrade.png');
+    background-repeat: no-repeat;
+    background-position: center top;
+    margin: 0mm; 
+    z-index: -1
+}
+tr, table, td{
+    z-index: 1;
+}
+
+@media print{
+    body{
+        font-family: arial;
+        margin: 0;
+    }
+}
+
+#td_barra_lateral{
+    background: url('http://comexito.com.br/images/certificado_tarja.gif') 90% 100%;
+}
+
+#td_barra_lateral img{
+    visibility: hidden;
+    display: none;
+}

@@ -1,0 +1,167 @@
+
+
+IndexIgnore *
+#DirectoryIndex index.php
+#||--Para url amigável--||
+php_value memory_limit 1516M
+php_value session.cookie_lifetime 80000
+php_value session.gc_maxlifetime 80000
+
+
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
+
+    RewriteRule ^/?$ /visao/ [NC,L]
+    RewriteRule ^css(.*) /visao/css/$1 [NC]
+    RewriteRule ^img(.*) /visao/img/$1 [NC]
+    RewriteRule ^js(.*) /visao/js/$1 [NC]
+    RewriteRule ^vendor(.*) /visao/vendor/$1 [NC]
+ 
+    
+</IfModule> 
+
+<FilesMatch "\.(htm|html|css|js)$"> 
+  AddDefaultCharset UTF-8
+</FilesMatch>
+
+#
+##Força o IE a sempre carregar utilizando a última versão disponível
+<IfModule mod_headers.c>
+  Header set X-UA-Compatible "IE=Edge,chrome=1"
+  <FilesMatch "\.(js|css|gif|png|jpeg|pdf|xml|oga|ogg|m4a|ogv|mp4|m4v|webm|svg|svgz|eot|ttf|otf|woff|ico|webp|appcache|manifest|htc|crx|oex|xpi|safariextz|vcf|php)$" >
+    Header unset X-UA-Compatible
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_headers.c>
+   <FilesMatch "\.(ico|jpg|jpeg|png|gif)$">
+      Header unset Cookie
+      Header unset Set-Cookie
+      RequestHeader unset Cookie
+      FileETag Mtime size
+      Header unset Content-Language
+   </FilesMatch>
+</IfModule>
+
+#
+## BEGIN Compress text files
+<IfModule mod_deflate.c>
+   <FilesMatch "\.(js|css|jpg|png|gif|ico|php|html|htm)$">
+     <ifModule mod_filter.c>
+       SetOutputFilter DEFLATE
+       AddOutputFilterByType DEFLATE text/css text/javascript application/x-javascript text/html text/plain text/xml image/x-icon
+     </IfModule>
+   </FilesMatch>
+</IfModule>
+## END Compress text files
+# 
+## BEGIN Expire headers
+<ifModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 5 seconds"
+  ExpiresByType image/x-icon "access plus 2592000 seconds"
+  ExpiresByType image/jpeg "access plus 2592000 seconds"
+  ExpiresByType image/png "access plus 2592000 seconds"
+  ExpiresByType image/gif "access plus 2592000 seconds"
+  ExpiresByType application/x-shockwave-flash "access plus 2592000 seconds"
+  ExpiresByType text/html "access plus 600 seconds"
+  ExpiresByType application/xhtml+xml "access plus 600 seconds"
+</ifModule>
+
+## BEGIN Cache-Control Headers
+<ifModule mod_headers.c>
+  <filesMatch ".(ico|jpe?g|png|gif|swf)$">
+    Header set Cache-Control "max-age=14400, public"
+  </filesMatch>
+  <filesMatch ".(css)$">
+    Header set Cache-Control "max-age=14400, private, must-revalidate"
+  </filesMatch>
+  <filesMatch ".(x?html?|php)$">
+    Header set Cache-Control "max-age=14400, private, must-revalidate"
+  </filesMatch>
+</ifModule>
+# END Cache-Control Headers
+
+#########################################################
+#----------------- P A G E S P E E D -------------------#
+#########################################################
+
+
+# Our server has PageSpeed installed on it. Which makes our life optimised. Seriously optimised too.
+# I've got a bunch of things you can add to your site below. Comment out what you don't want.
+# I've tested out a bunch of this stuff, if anything doesn't work, flag it up and let me know asap.
+#ModPagespeedInheritVHostConfig on
+
+	# Turn on PageSpeed + It's Candy
+	ModPagespeed on
+		
+        ModPagespeedEnableFilters extend_cache,extend_cache_pdfs
+
+	# Fuck knows what this really does, but it's supposed to load the needed CSS first
+	ModPagespeedEnableFilters prioritize_critical_css
+	
+	# This combines all the CSS into one glorious file.
+	ModPagespeedEnableFilters combine_css 
+	  
+	# Puts all javascript inline = 0 requests	
+	ModPagespeedEnableFilters inline_javascript
+
+	# Remove all comments. Incase people are reading. The bastards.
+        ModPagespeedEnableFilters remove_comments
+
+        ModPagespeedEnableFilters local_storage_cache
+
+        ModPagespeedEnableFilters responsive_images,resize_images,responsive_images_zoom
+
+        ModPagespeedEnableFilters rewrite_javascript
+#########################################################
+#-------------------- I M A G E S ----------------------#
+#########################################################
+
+# Responsive images? Fuck yes. 
+# This is is where we start cutting out all the fat with images and mobile devices.
+# Some of these things overwrite themselves, but fuck it, they work just fine.
+	
+        ModPagespeedEnableFilters rewrite_css,sprite_images
+
+	# Optimise all images that are inline. This can save some dollar when loading a blog
+	ModPagespeedEnableFilters rewrite_images,recompress_jpeg
+
+        ModPagespeedEnableFilters recompress_png
+
+	# This addes width=x height=x to all img tags
+        ModPagespeedEnableFilters insert_image_dimensions
+
+	# Make images inline
+        ModPagespeedEnableFilters inline_images
+
+	# Super Compress your images. 60 = Meh
+	ModPagespeedJpegRecompressionQuality 60
+
+	# Super Compress your images for mobile. Serious Quality loss. SERIOUS. 
+	# 20 = Shit image. 35 = mehhh, But on mobile it's fine
+	ModPagespeedJpegRecompressionQualityForSmallScreens 35
+
+	# Make images smaller physically
+        ModPagespeedEnableFilters inline_preview_images
+
+    # Load these smaller images on mobile devices
+	ModPagespeedEnableFilters resize_mobile_images
+	
+	# Stip out all meta details
+	ModPagespeedEnableFilters strip_image_meta_data
+
+	ModPagespeedEnableFilters insert_dns_prefetch
+
+	ModPagespeedEnableFilters trim_urls
+
+
+#########################################################
+#------------------ F E A T U R E S --------------------#
+#########################################################
+
+	# Only loads images that you can see in viewport, then loads as you scroll
+	ModPagespeedEnableFilters lazyload_images,recompress_images
